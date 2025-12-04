@@ -5,6 +5,39 @@ require('dotenv').config();
 
 const app = express();
 
+
+
+// provando a ver // 
+
+// Ruta para servicios
+app.get('/api/services', async (req, res) => {
+    try {
+        if (dbConnection && Provider) {
+            const providers = await Provider.find({});
+            const services = providers.flatMap(p => 
+                p.services.map(s => ({
+                    ...s._doc,
+                    providerName: p.businessName,
+                    providerId: p._id
+                }))
+            );
+            res.json({ success: true, data: services });
+        } else {
+            res.json({
+                success: true,
+                data: [
+                    { id: 1, name: 'Jardinería', category: 'Jardinería', price: 3500, description: 'Mantenimiento' },
+                    { id: 2, name: 'Limpieza', category: 'Limpieza', price: 1800, description: 'Limpieza profunda' }
+                ]
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// proband o ver //
+
 // ============================================
 // CONFIGURACIÓN INICIAL
 // ============================================
@@ -711,13 +744,45 @@ app.post('/api/seed', async (req, res) => {
     }
 });
 
+
 // ============================================
 // INICIAR SERVIDOR
 // ============================================
 const PORT = process.env.PORT || 5000;
 const SERVER_HOST = 'localhost';
+// Ruta para servicios
+app.get('/api/services', async (req, res) => {
+    try {
+        if (dbConnection && Provider) {
+            const providers = await Provider.find({});
+            const services = providers.flatMap(p => 
+                p.services.map(s => ({
+                    ...s._doc,
+                    providerName: p.businessName,
+                    providerId: p._id
+                }))
+            );
+            res.json({ success: true, data: services });
+        } else {
+            res.json({
+                success: true,
+                data: [
+                    { id: 1, name: 'Jardinería', category: 'Jardinería', price: 3500, description: 'Mantenimiento' },
+                    { id: 2, name: 'Limpieza', category: 'Limpieza', price: 1800, description: 'Limpieza profunda' }
+                ]
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+
+
 
 // Función para inicializar la aplicación
+
+
 const initializeApp = async () => {
     try {
         // Conectar a la base de datos
